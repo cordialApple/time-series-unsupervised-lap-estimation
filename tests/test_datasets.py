@@ -10,7 +10,7 @@ class DatasetConfigTests(unittest.TestCase):
 
         dataset = resolve_dataset("drive_day_2026", root)
 
-        self.assertEqual(dataset.raw_root, root / "Drive Day 7_18")
+        self.assertEqual(dataset.raw_root, root / "2026_drive_data")
         self.assertEqual(dataset.artifact_root, root / "artifacts" / "drive_day_2026")
         self.assertEqual(dataset.native_sample_rate_hz, 10.0)
 
@@ -23,6 +23,7 @@ class DatasetConfigTests(unittest.TestCase):
 
         self.assertTrue(dataset.enabled)
         self.assertEqual(dataset.artifact_root, root / "artifacts" / "aim_2023")
+        self.assertEqual(dataset.raw_root, root / "2023_drive_data")
         self.assertEqual(dataset.native_sample_rate_hz, 20.0)
         self.assertEqual(dataset.clock_provenance, "inferred_uniform_from_metadata")
         self.assertIn("InlineAcc", dataset.analysis_channels)

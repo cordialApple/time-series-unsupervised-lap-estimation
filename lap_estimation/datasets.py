@@ -21,7 +21,7 @@ class DatasetSpec:
 
 DATASET_DEFINITIONS = {
     "drive_day_2026": {
-        "raw_path": "Drive Day 7_18",
+        "raw_path": "2026_drive_data",
         "csv_format": "flat_timestamped_csv",
         "native_sample_rate_hz": 10.0,
         "clock_provenance": "recorded_time_column",
@@ -59,7 +59,7 @@ DATASET_DEFINITIONS = {
         "semantic_mapping_version": "1.0",
     },
     "aim_2023": {
-        "raw_path": "2023",
+        "raw_path": "2023_drive_data",
         "csv_format": "aim_csv_missing_sample_time",
         "native_sample_rate_hz": 20.0,
         "clock_provenance": "inferred_uniform_from_metadata",
