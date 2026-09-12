@@ -1,0 +1,52 @@
+recording_id,channel,lag_s,correlation,segment_id,start_s,end_s,prediction_kind,score,label_status
+1cca7c275163fc193899535ebb0c13f26676e8568d3c8adac48dbcc224812b0c,MC Duty Cycle [%],16.1,-0.9532128388226451,channel_0,0.0,37.9,channel_recurrence_period,-0.9532128388226451,provisional_unverified
+1cca7c275163fc193899535ebb0c13f26676e8568d3c8adac48dbcc224812b0c,Pack_Current,15.5,-0.8122419467339285,channel_1,0.0,37.9,channel_recurrence_period,-0.8122419467339285,provisional_unverified
+200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e,MC Duty Cycle [%],15.1,0.2506001963056957,channel_0,0.0,57.8,channel_recurrence_period,0.2506001963056957,provisional_unverified
+200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e,AC Current,15.4,0.21686057787070367,channel_1,0.0,57.8,channel_recurrence_period,0.21686057787070367,provisional_unverified
+200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e,DC Current [A],22.4,0.09079697489773388,channel_2,0.0,57.8,channel_recurrence_period,0.09079697489773388,provisional_unverified
+200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e,Pack_Current,22.4,0.059687949960059855,channel_3,0.0,57.8,channel_recurrence_period,0.059687949960059855,provisional_unverified
+25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e,MC Duty Cycle [%],36.3,-0.6594089600758106,channel_0,0.0,73.7,channel_recurrence_period,-0.6594089600758106,provisional_unverified
+25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e,AC Current,15.5,0.2698776212953688,channel_1,0.0,73.7,channel_recurrence_period,0.2698776212953688,provisional_unverified
+25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e,DC Current [A],15.3,0.2173667351400902,channel_2,0.0,73.7,channel_recurrence_period,0.2173667351400902,provisional_unverified
+25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e,Pack_Current,15.3,0.14832001406803233,channel_3,0.0,73.7,channel_recurrence_period,0.14832001406803233,provisional_unverified
+382db1f8ede73f956341d7b461790125339762ec9d7cc96480f20aefe04d77e1,MC Duty Cycle [%],20.8,0.13875481468616277,channel_0,0.0,57.8,channel_recurrence_period,0.13875481468616277,provisional_unverified
+564a12f3d813c10242613a907d2b4981e7296739ba9a560571b3547dab1daa7f,Motor RPM [Rpm],25.4,0.0864658459584961,channel_0,0.0,57.8,channel_recurrence_period,0.0864658459584961,provisional_unverified
+564a12f3d813c10242613a907d2b4981e7296739ba9a560571b3547dab1daa7f,MC Duty Cycle [%],15.2,0.14164721650573295,channel_1,0.0,57.8,channel_recurrence_period,0.14164721650573295,provisional_unverified
+5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613,Motor RPM [Rpm],19.1,-0.1727382007939324,channel_0,0.0,41.8,channel_recurrence_period,-0.1727382007939324,provisional_unverified
+5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613,MC Duty Cycle [%],19.8,0.03729625518041165,channel_1,0.0,41.8,channel_recurrence_period,0.03729625518041165,provisional_unverified
+5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613,AC Current,19.8,0.23800937919962897,channel_2,0.0,41.8,channel_recurrence_period,0.23800937919962897,provisional_unverified
+5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613,DC Current [A],19.8,0.34210725064332603,channel_3,0.0,41.8,channel_recurrence_period,0.34210725064332603,provisional_unverified
+5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613,Pack_Current,19.8,0.35575011082348323,channel_4,0.0,41.8,channel_recurrence_period,0.35575011082348323,provisional_unverified
+629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4,Motor RPM [Rpm],23.3,-0.4372394421462984,channel_0,0.0,85.7,channel_recurrence_period,-0.4372394421462984,provisional_unverified
+629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4,MC Duty Cycle [%],40.0,0.28563324561599585,channel_1,0.0,85.7,channel_recurrence_period,0.28563324561599585,provisional_unverified
+629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4,AC Current,42.1,0.09409198738126565,channel_2,0.0,85.7,channel_recurrence_period,0.09409198738126565,provisional_unverified
+629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4,DC Current [A],42.3,0.17636396274946714,channel_3,0.0,85.7,channel_recurrence_period,0.17636396274946714,provisional_unverified
+629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4,Pack_Current,42.3,0.190021726673857,channel_4,0.0,85.7,channel_recurrence_period,0.190021726673857,provisional_unverified
+667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29,Motor RPM [Rpm],105.0,0.13171486807316604,channel_0,0.0,229.1,channel_recurrence_period,0.13171486807316604,provisional_unverified
+667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29,MC Duty Cycle [%],104.9,0.16817113970603878,channel_1,0.0,229.1,channel_recurrence_period,0.16817113970603878,provisional_unverified
+667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29,AC Current,105.9,0.2775641407024835,channel_2,0.0,229.1,channel_recurrence_period,0.2775641407024835,provisional_unverified
+667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29,DC Current [A],105.8,0.2419148163189505,channel_3,0.0,229.1,channel_recurrence_period,0.2419148163189505,provisional_unverified
+667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29,Pack_Current,105.8,0.22904654434219562,channel_4,0.0,229.1,channel_recurrence_period,0.22904654434219562,provisional_unverified
+67460352e955edbaf8a0e73406f2aa4726aa14abea0a93abbe0484dccf14d5c3,AC Current,18.5,0.19093432557084036,channel_0,0.0,37.9,channel_recurrence_period,0.19093432557084036,provisional_unverified
+67460352e955edbaf8a0e73406f2aa4726aa14abea0a93abbe0484dccf14d5c3,DC Current [A],18.5,0.021969931978904178,channel_1,0.0,37.9,channel_recurrence_period,0.021969931978904178,provisional_unverified
+67460352e955edbaf8a0e73406f2aa4726aa14abea0a93abbe0484dccf14d5c3,Pack_Current,18.5,-0.012219681733990835,channel_2,0.0,37.9,channel_recurrence_period,-0.012219681733990835,provisional_unverified
+6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39,Motor RPM [Rpm],20.6,0.4683055229914759,channel_0,0.0,65.7,channel_recurrence_period,0.4683055229914759,provisional_unverified
+6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39,MC Duty Cycle [%],15.8,0.39250272360145566,channel_1,0.0,65.7,channel_recurrence_period,0.39250272360145566,provisional_unverified
+6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39,AC Current,32.7,0.4113307010002174,channel_2,0.0,65.7,channel_recurrence_period,0.4113307010002174,provisional_unverified
+6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39,DC Current [A],17.9,0.1306299681403872,channel_3,0.0,65.7,channel_recurrence_period,0.1306299681403872,provisional_unverified
+6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39,Pack_Current,17.1,0.20698933357824192,channel_4,0.0,65.7,channel_recurrence_period,0.20698933357824192,provisional_unverified
+6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117,Motor RPM [Rpm],41.9,0.9289850983115677,channel_0,0.0,89.6,channel_recurrence_period,0.9289850983115677,provisional_unverified
+6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117,MC Duty Cycle [%],42.2,0.8752597274974253,channel_1,0.0,89.6,channel_recurrence_period,0.8752597274974253,provisional_unverified
+6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117,AC Current,42.3,0.7314647145765238,channel_2,0.0,89.6,channel_recurrence_period,0.7314647145765238,provisional_unverified
+6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117,DC Current [A],42.6,0.679272159347851,channel_3,0.0,89.6,channel_recurrence_period,0.679272159347851,provisional_unverified
+6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117,Pack_Current,42.6,0.7454543855702318,channel_4,0.0,89.6,channel_recurrence_period,0.7454543855702318,provisional_unverified
+953f71ef131b4c5ce7211560abcbafbfe0079e72cf2190c2908d3ff00cf5db12,MC Duty Cycle [%],19.2,0.12796092945696827,channel_0,0.0,89.6,channel_recurrence_period,0.12796092945696827,provisional_unverified
+c5c639ca1fa3038e565a432a960cb53f6ce533ad9612d27f229f6527fcf0edac,MC Duty Cycle [%],16.7,0.0883643303918958,channel_0,0.0,33.8,channel_recurrence_period,0.0883643303918958,provisional_unverified
+e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d,Motor RPM [Rpm],23.3,-0.025823364706292276,channel_0,0.0,57.8,channel_recurrence_period,-0.025823364706292276,provisional_unverified
+e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d,MC Duty Cycle [%],15.3,0.30799980250974823,channel_1,0.0,57.8,channel_recurrence_period,0.30799980250974823,provisional_unverified
+e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d,AC Current,23.7,0.46575185629821403,channel_2,0.0,57.8,channel_recurrence_period,0.46575185629821403,provisional_unverified
+e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d,DC Current [A],23.3,0.29381781579440386,channel_3,0.0,57.8,channel_recurrence_period,0.29381781579440386,provisional_unverified
+e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d,Pack_Current,23.3,0.26129302926704273,channel_4,0.0,57.8,channel_recurrence_period,0.26129302926704273,provisional_unverified
+f8a2dfe19bc591bed40778fcb493d9a34a3261518b2f4b416ba15a9402ec6dd7,AC Current,16.8,0.14867502264119573,channel_0,0.0,41.8,channel_recurrence_period,0.14867502264119573,provisional_unverified
+f8a2dfe19bc591bed40778fcb493d9a34a3261518b2f4b416ba15a9402ec6dd7,DC Current [A],16.5,0.1624567107698794,channel_1,0.0,41.8,channel_recurrence_period,0.1624567107698794,provisional_unverified
+f8a2dfe19bc591bed40778fcb493d9a34a3261518b2f4b416ba15a9402ec6dd7,Pack_Current,16.5,0.18269475655573147,channel_2,0.0,41.8,channel_recurrence_period,0.18269475655573147,provisional_unverified

@@ -1,0 +1,222 @@
+{
+  "cohorts": {
+    "aim_2023": {
+      "autoencoder_test_mse": 9.359963521769652,
+      "autoencoder_to_pca_test_mse_ratio": 1.0346881989043157,
+      "clock_provenance": "inferred_uniform_from_metadata",
+      "cluster_seed_ari": 1.0,
+      "cluster_silhouette": 0.6665222696960819,
+      "cohort_key": "aim_2023",
+      "control_candidates": 7,
+      "cross_correlation_median_absolute_peak": 0.655752719384098,
+      "dtw_match_rate_all": 0.7391304347826086,
+      "dtw_match_rate_test": 0.7,
+      "duration_min": 33.70166666666667,
+      "embedding_effective_rank": 1.0290211100955033,
+      "fusion_recordings": 10,
+      "fusion_status_counts": {
+        "review": 3,
+        "weak": 7
+      },
+      "gru_test_mse": 15.166861140684444,
+      "gru_to_persistence_test_mse_ratio": 7.812310980069099,
+      "interpolation": {
+        "long_gap": {
+          "best_method": "linear",
+          "duration_s": 0.5,
+          "median_normalized_rmse": 2.447114078391777
+        },
+        "short_gap": {
+          "best_method": "pchip",
+          "duration_s": 0.05,
+          "median_normalized_rmse": 0.5392722123339095
+        }
+      },
+      "label": "2023 AiM event",
+      "pca_test_mse": 9.04616823858762,
+      "persistence_test_mse": 1.9414051974349715,
+      "recordings": 18,
+      "sample_rate_hz": 20.0,
+      "selected_cluster_count": 3,
+      "signal_review_candidate_rate": 0.125,
+      "source_paths": 18,
+      "strongest_recording_correlation": {
+        "methods": [
+          "Autoencoder",
+          "Sequence"
+        ],
+        "rho": 0.9525283797729618
+      }
+    },
+    "drive_day_2026": {
+      "autoencoder_test_mse": 0.1911096077273833,
+      "autoencoder_to_pca_test_mse_ratio": 1.2846022018482401,
+      "clock_provenance": "recorded_time_column",
+      "cluster_seed_ari": 1.0,
+      "cluster_silhouette": 0.8620580722450073,
+      "cohort_key": "drive_day_2026",
+      "control_candidates": 5,
+      "cross_correlation_median_absolute_peak": 0.7657237215613244,
+      "dtw_match_rate_all": 0.5871559633027523,
+      "dtw_match_rate_test": 0.5,
+      "duration_min": 19.820000000000004,
+      "embedding_effective_rank": 1.0328023513547402,
+      "fusion_recordings": 15,
+      "fusion_status_counts": {
+        "insufficient_evidence": 2,
+        "review": 4,
+        "weak": 9
+      },
+      "gru_test_mse": 0.1801490072904814,
+      "gru_to_persistence_test_mse_ratio": 1.906694071797944,
+      "interpolation": {
+        "long_gap": {
+          "best_method": "linear",
+          "duration_s": 0.5,
+          "median_normalized_rmse": 0.3049504124302794
+        },
+        "short_gap": {
+          "best_method": "pchip",
+          "duration_s": 0.1,
+          "median_normalized_rmse": 0.2049513769072465
+        }
+      },
+      "label": "2026 EV drive day",
+      "pca_test_mse": 0.148769484788693,
+      "persistence_test_mse": 0.0944823870567801,
+      "recordings": 21,
+      "sample_rate_hz": 10.0,
+      "selected_cluster_count": 3,
+      "signal_review_candidate_rate": 0.4444444444444444,
+      "source_paths": 26,
+      "strongest_recording_correlation": {
+        "methods": [
+          "Autoencoder",
+          "Sequence"
+        ],
+        "rho": 0.9675324675324676
+      }
+    }
+  },
+  "findings": [
+    {
+      "action": "Annotate boundaries in review recordings before training a supervised detector.",
+      "evidence": "Fusion marks 4 of 15 evidence-covered 2026 recordings and 3 of 10 evidence-covered 2023 recordings for review.",
+      "id": "recurrence-review-set",
+      "interpretation": "Signal, correlation, and DTW provide a smaller review queue, not verified lap labels.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/recurrence_fusion.csv",
+        "artifacts/aim_2023/recurrence_fusion.csv"
+      ],
+      "status": "supported",
+      "title": "Recurrence evidence narrows manual review"
+    },
+    {
+      "action": "Retest DTW against manually labeled lap pairs and unrelated hard negatives.",
+      "evidence": "Held-out match rates are 50.0% for 2026 and 70.0% for 2023.",
+      "id": "dtw-mixed-generalization",
+      "interpretation": "DTW uses signal-derived periods, so agreement cannot count as independent confirmation.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/02_dtw/metrics.csv",
+        "artifacts/aim_2023/02_dtw/metrics.csv"
+      ],
+      "status": "caution",
+      "title": "DTW support is cohort-dependent and teacher-dependent"
+    },
+    {
+      "action": "Use interpolation only below a validated gap limit and retain an imputation mask.",
+      "evidence": "Best short-gap median normalized RMSE is 0.20 for 2026 and 0.54 for 2023; 0.5 s gaps rise to 0.30 and 2.45.",
+      "id": "interpolation-boundary",
+      "interpretation": "Interior interpolation can repair isolated samples but cannot create missing dynamics or timing truth.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/01_signal_processing/interpolation_benchmark.csv",
+        "artifacts/aim_2023/01_signal_processing/interpolation_benchmark.csv"
+      ],
+      "status": "caution",
+      "title": "Interpolation repairs short gaps only"
+    },
+    {
+      "action": "Do not use these embeddings as pseudo-labels; redesign objectives and hard-negative sampling first.",
+      "evidence": "Effective rank is 1.03 of 8 dimensions for 2026 and 1.03 of 8 for 2023.",
+      "id": "embedding-collapse",
+      "interpretation": "Near-unity neighbor similarities do not demonstrate useful recurrence structure when almost all variance occupies one direction.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/04_learned_embeddings/embeddings.npy",
+        "artifacts/aim_2023/04_learned_embeddings/embeddings.npy"
+      ],
+      "status": "negative",
+      "title": "Masked-reconstruction embeddings collapse"
+    },
+    {
+      "action": "Keep PCA as baseline; revisit autoencoders only with a task-linked validation target.",
+      "evidence": "Test MSE ratios versus PCA are 1.28 for 2026 and 1.03 for 2023; values above 1 are worse.",
+      "id": "autoencoder-baseline",
+      "interpretation": "Nonlinear reconstruction adds no demonstrated value at current model size and training setup.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/05_autoencoders/metrics.csv",
+        "artifacts/aim_2023/05_autoencoders/metrics.csv"
+      ],
+      "status": "negative",
+      "title": "Autoencoder fails to beat PCA"
+    },
+    {
+      "action": "Do not promote GRU residuals to labels. Change horizon or objective before retraining.",
+      "evidence": "Test MSE ratios versus persistence are 1.91 for 2026 and 7.81 for 2023.",
+      "id": "sequence-baseline",
+      "interpretation": "Slowly sampled telemetry makes unchanged-value prediction a strong baseline; current GRU adds error.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/07_sequence_models/metrics.csv",
+        "artifacts/aim_2023/07_sequence_models/metrics.csv"
+      ],
+      "status": "negative",
+      "title": "GRU fails to beat persistence"
+    },
+    {
+      "action": "Use regimes to stratify future labels and error analysis.",
+      "evidence": "Training selects k=3 with silhouette 0.862 for 2026 and 0.667 for 2023; seed ARI is 1.000 and 1.000.",
+      "id": "stable-operating-regimes",
+      "interpretation": "Clusters are reproducible operating regimes, not lap phases or track sectors.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/08_unsupervised_learning/cluster_selection.csv",
+        "artifacts/aim_2023/08_unsupervised_learning/cluster_selection.csv"
+      ],
+      "status": "supported",
+      "title": "Three stable operating regimes appear in both cohorts"
+    },
+    {
+      "action": "Fuse evidence by method family and preserve disagreement instead of averaging all scores.",
+      "evidence": "Strongest recording correlations are Autoencoder\u2013Sequence at rho=0.97 for 2026 and Autoencoder\u2013Sequence at rho=0.95 for 2023.",
+      "id": "method-dependence",
+      "interpretation": "Correlated reconstruction and sequence errors reflect shared signal difficulty, not independent lap agreement.",
+      "scope": "both",
+      "sources": [
+        "artifacts/drive_day_2026/recording_method_spearman.csv",
+        "artifacts/aim_2023/recording_method_spearman.csv"
+      ],
+      "status": "caution",
+      "title": "Strong method correlations mostly expose shared behavior"
+    }
+  ],
+  "limitations": [
+    "No independent lap boundaries, start-line beacon, GPS position, or official timing truth are present.",
+    "2023 elapsed time is inferred from validated 20 Hz sampling because source time cells are blank.",
+    "2026 timestamps are regular at 10 Hz; interpolation adds no higher-frequency information.",
+    "DTW depends on signal-derived candidate periods, and learned-method windows overlap.",
+    "Stable clusters identify operating regimes only."
+  ],
+  "next_actions": [
+    "Review and label boundaries in the seven fusion-selected recordings.",
+    "Record lap beacon or GPS truth during the next event.",
+    "Evaluate boundary error, lap-count error, precision, and recall on recording-level held-out splits.",
+    "Keep PCA and persistence as mandatory baselines.",
+    "Retain interpolation masks and reject gaps beyond validated limits."
+  ],
+  "schema_version": "1.0"
+}

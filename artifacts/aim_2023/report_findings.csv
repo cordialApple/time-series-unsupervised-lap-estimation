@@ -1,0 +1,9 @@
+method,result,reading
+Signal processing,0.125,Review-candidate rate only; control detections remain visible.
+DTW,0.7,Above 0.5 supports teacher-period pairs only.
+Correlation,5.000000000000001,"Lower channel lag spread means consistency, not accuracy."
+Learned embeddings,0.99979260612135,Near-unity values may mean overlap or collapse.
+Autoencoder,0.3137952831820314,Negative delta beats PCA.
+Contrastive learning,0.9897724986076356,Measures augmentation invariance only.
+Sequence model,13.225455943249473,Negative delta beats persistence.
+Unsupervised learning,1.0,Stable clusters remain operating regimes.

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "method": "02_dtw",
+  "task": "time_warped_period_pair_retrieval",
+  "config": {
+    "dataset_key": "drive_day_2026",
+    "window_s": 10.0,
+    "step_s": 2.0,
+    "warping_band_s": 1.0,
+    "warping_band_samples": 10
+  },
+  "source_hashes": [
+    "07173121b1534f1eadb8b127005d4eff70872388074c2bbe0c93061527d89f40",
+    "1a8433bf1168531d6f7c2deb5c37b27de5ddf1d9f65316416ecbf000289fd40a",
+    "1cca7c275163fc193899535ebb0c13f26676e8568d3c8adac48dbcc224812b0c",
+    "200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e",
+    "25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e",
+    "2f775054c4e7bb342cf49e0ee66406e82353c274c103fc7f7d6a93ea329aea86",
+    "382db1f8ede73f956341d7b461790125339762ec9d7cc96480f20aefe04d77e1",
+    "4c8d0190b666e26315ce16c862ca2e968d576e14537487162bbd73b9a47d0c07",
+    "554af5ad576c1c1d069356649e3bd1e2699a5801f6a0fa703e0c50db726bae3b",
+    "564a12f3d813c10242613a907d2b4981e7296739ba9a560571b3547dab1daa7f",
+    "5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613",
+    "629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4",
+    "667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29",
+    "67460352e955edbaf8a0e73406f2aa4726aa14abea0a93abbe0484dccf14d5c3",
+    "6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39",
+    "6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117",
+    "953f71ef131b4c5ce7211560abcbafbfe0079e72cf2190c2908d3ff00cf5db12",
+    "c5c639ca1fa3038e565a432a960cb53f6ce533ad9612d27f229f6527fcf0edac",
+    "e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d",
+    "f26c5b91a912f9e98e0205e2518d5b3de0314b04b69c3bc6d0148fa8ea3e842b",
+    "f8a2dfe19bc591bed40778fcb493d9a34a3261518b2f4b416ba15a9402ec6dd7"
+  ],
+  "split_assignments": {
+    "07173121b1534f1eadb8b127005d4eff70872388074c2bbe0c93061527d89f40": "train",
+    "1a8433bf1168531d6f7c2deb5c37b27de5ddf1d9f65316416ecbf000289fd40a": "train",
+    "1cca7c275163fc193899535ebb0c13f26676e8568d3c8adac48dbcc224812b0c": "train",
+    "200a690cbeb5a4d9f415d6a933e60aa13a0cf5ee5c03c71731d7739c8ecbda5e": "train",
+    "25aa01e1dcbaea32c062e01b0f782c938c34163fc58af14087dfe2f77906c06e": "train",
+    "2f775054c4e7bb342cf49e0ee66406e82353c274c103fc7f7d6a93ea329aea86": "train",
+    "382db1f8ede73f956341d7b461790125339762ec9d7cc96480f20aefe04d77e1": "train",
+    "4c8d0190b666e26315ce16c862ca2e968d576e14537487162bbd73b9a47d0c07": "train",
+    "554af5ad576c1c1d069356649e3bd1e2699a5801f6a0fa703e0c50db726bae3b": "train",
+    "564a12f3d813c10242613a907d2b4981e7296739ba9a560571b3547dab1daa7f": "train",
+    "5e9e04831922d971561f6ffb53b2c77744d905cca01dcc2fe043d10b2f63c613": "train",
+    "629d7d57091b71c5c0c2c6f42218702e454b4ae60e20636885741c7c22fe1bb4": "train",
+    "667a6e15a4394db30d7cce7a4db319041453bfa306b566a87e84b213d81efb29": "train",
+    "67460352e955edbaf8a0e73406f2aa4726aa14abea0a93abbe0484dccf14d5c3": "train",
+    "6939b3836a088e9113eb3bffcf362bed963a71bbd9012ecb56dc61e6d500da39": "validation",
+    "6faa006353747cbeb4e6d2e90954728110cb94fabfcd41e319270d4cde22f117": "validation",
+    "953f71ef131b4c5ce7211560abcbafbfe0079e72cf2190c2908d3ff00cf5db12": "validation",
+    "c5c639ca1fa3038e565a432a960cb53f6ce533ad9612d27f229f6527fcf0edac": "test",
+    "e57d3de89d6f2a3165aa05beee7b611f60923e090254337c1b48f744c78db52d": "test",
+    "f26c5b91a912f9e98e0205e2518d5b3de0314b04b69c3bc6d0148fa8ea3e842b": "test",
+    "f8a2dfe19bc591bed40778fcb493d9a34a3261518b2f4b416ba15a9402ec6dd7": "test"
+  },
+  "label_provenance": "signal_period_teacher_unverified",
+  "status": "complete",
+  "runtime_s": 2.383,
+  "package_versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.5",
+    "scikit_learn": "1.9.1",
+    "torch": "2.14.0+cpu"
+  },
+  "data_provenance": {
+    "dataset_key": "drive_day_2026",
+    "native_sample_rate_hz": 10.0,
+    "clock_provenance": "recorded_time_column",
+    "selected_channels": [
+      "Motor RPM [Rpm]",
+      "MC Duty Cycle [%]",
+      "AC Current",
+      "DC Current [A]",
+      "Pack_Current"
+    ],
+    "semantic_mapping": {
+      "Motor RPM [Rpm]": "motor_rpm",
+      "MC Duty Cycle [%]": "motor_controller_duty_pct",
+      "AC Current": "motor_ac_current",
+      "DC Current [A]": "motor_dc_current_a",
+      "Pack_Current": "pack_current"
+    },
+    "semantic_mapping_version": "1.0",
+    "motion_policy": "motor_rpm_threshold"
+  }
+}

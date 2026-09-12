@@ -1,0 +1,8 @@
+task,split,metric,value,sample_count,reference_source
+driving_regime_clustering,train,selected_cluster_count,3.0,662,internal_selection
+driving_regime_clustering,train,silhouette,0.6665222696960819,662,internal_only
+driving_regime_clustering,train,seed_adjusted_rand_index,1.0,662,internal_only
+driving_regime_clustering,train,mean_centroid_distance,1.938080665591948,662,none
+driving_regime_clustering,validation,mean_centroid_distance,2.8445643230886404,61,none
+driving_regime_clustering,test,mean_centroid_distance,1.363307265490526,213,none
+driving_regime_clustering,all,mean_centroid_distance,1.866359264828802,936,none

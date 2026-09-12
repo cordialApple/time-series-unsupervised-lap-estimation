@@ -1,0 +1,9 @@
+task,split,metric,value,sample_count,reference_source
+masked_signal_prediction,train,mean_reconstruction_mse,0.547548095946712,333,none
+masked_signal_prediction,validation,mean_reconstruction_mse,0.4537763585178115,108,none
+masked_signal_prediction,test,mean_reconstruction_mse,0.4393987944977747,59,none
+masked_signal_prediction,all,mean_reconstruction_mse,0.5145317830910949,500,none
+embedding_retrieval,train,mean_neighbor_cosine_similarity,0.999081245310304,333,none
+embedding_retrieval,validation,mean_neighbor_cosine_similarity,0.9989524446192944,108,none
+embedding_retrieval,test,mean_neighbor_cosine_similarity,0.9997021191085306,59,none
+embedding_retrieval,all,mean_neighbor_cosine_similarity,0.9991266874692367,500,none

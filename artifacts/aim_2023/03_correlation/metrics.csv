@@ -1,0 +1,9 @@
+task,split,metric,value,sample_count,reference_source
+channel_lag_consensus,train,mean_lag_mad_s,2.3714285714285714,7,none
+channel_lag_consensus,validation,mean_lag_mad_s,0.25,1,none
+channel_lag_consensus,test,mean_lag_mad_s,5.000000000000001,2,none
+channel_lag_consensus,all,mean_lag_mad_s,2.6850000000000005,10,none
+sensor_cross_correlation,train,median_absolute_peak_correlation,0.655752719384098,110,none
+sensor_cross_correlation,validation,median_absolute_peak_correlation,0.7418778396720147,30,none
+sensor_cross_correlation,test,median_absolute_peak_correlation,0.44205267841744955,40,none
+sensor_cross_correlation,all,median_absolute_peak_correlation,0.655752719384098,180,none

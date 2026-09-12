@@ -1,0 +1,9 @@
+task,split,metric,value,sample_count,reference_source
+window_reconstruction,train,autoencoder_mse,16.333256389415876,662,none
+window_reconstruction,validation,autoencoder_mse,49.38320001077953,61,none
+window_reconstruction,test,autoencoder_mse,9.359963521769652,213,none
+window_reconstruction,all,autoencoder_mse,16.900281154474143,936,none
+window_reconstruction,train,pca_mse,16.667064772633413,662,none
+window_reconstruction,validation,pca_mse,45.45916685309383,61,none
+window_reconstruction,test,pca_mse,9.04616823858762,213,none
+window_reconstruction,all,pca_mse,16.809230654210694,936,none

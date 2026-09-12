@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "method": "07_sequence_models",
+  "task": "next_sample_prediction",
+  "config": {
+    "dataset_key": "aim_2023",
+    "window_s": 10.0,
+    "step_s": 2.0,
+    "hidden_dim": 16,
+    "layers": 1,
+    "epochs": 20,
+    "seed": 42
+  },
+  "source_hashes": [
+    "18385fe48224fbfa0cd6d17705d9305f857d70ef07b47b55502d04ff71359269",
+    "27937681c8199780c6cbce603f217d5a4457c351e84fa3cd7cfc62bfd270c550",
+    "4975a35d789765b9299480af66d6a5af5166fef074cef80facbac97409b84d07",
+    "5790cd1534b1de5ac4693367fe5d8ca6951cd36a7abcd3c778cee8923a932a75",
+    "5c12d7b5eff374be805bae6c5e2906f6c02b6bc3ad6ba70d3674bafd4f16fc15",
+    "5c8af6b8a89a449144e0ddf74414040b433d630e1fd3d3ddc138ec3c4284d97b",
+    "6732a35a8f6343dcf041f1a3ad40d6760331513a2556c4fae4eea6cd59da89b2",
+    "7208a43e77536a72e401c00f01a793130fb6688d28fb8080941e14cc5752b0ca",
+    "73093667f33a7f710fc20059989a002071359119e1e9c0a4128b67729755da33",
+    "8f799d59c9b5348ece1e5671692ea783d6d5e450ccebe31b6db9ad4f9510f8c5",
+    "9116cbf4be063f5be851f65778ddfb91d60bdd5aa52e7211426769a6b2ce6f86",
+    "973ef84ffaa4e83d002ed655331eb305b340c0f3f25b57795f97a151bcc3490b",
+    "b185f43818b8ff3aba325752922bbbf37fd094f1e282887487651e0a5c8f6c7a",
+    "b439fc5983a3a0db22239d5dcf8cbebf9104a8b71a93c2afd75e75fe87301e46",
+    "bace0e92b25324e8afbd0e5f6698b01a921780a2385e02419965fa97e3e796c4",
+    "c3c503093a73b359d513d025d9185c7ada423099650828cbd4fdba12d1d7aafc",
+    "db4d46d3c8abd3b8d2327e52a99599c63e7bd8ed5f1b122d3047d731fc6d2684",
+    "dc8bf44eb4cc0becf1c5ebe252a515c98193744c2031498501de80e036899758"
+  ],
+  "split_assignments": {
+    "18385fe48224fbfa0cd6d17705d9305f857d70ef07b47b55502d04ff71359269": "train",
+    "27937681c8199780c6cbce603f217d5a4457c351e84fa3cd7cfc62bfd270c550": "train",
+    "4975a35d789765b9299480af66d6a5af5166fef074cef80facbac97409b84d07": "train",
+    "5790cd1534b1de5ac4693367fe5d8ca6951cd36a7abcd3c778cee8923a932a75": "train",
+    "5c12d7b5eff374be805bae6c5e2906f6c02b6bc3ad6ba70d3674bafd4f16fc15": "train",
+    "5c8af6b8a89a449144e0ddf74414040b433d630e1fd3d3ddc138ec3c4284d97b": "train",
+    "6732a35a8f6343dcf041f1a3ad40d6760331513a2556c4fae4eea6cd59da89b2": "train",
+    "7208a43e77536a72e401c00f01a793130fb6688d28fb8080941e14cc5752b0ca": "train",
+    "73093667f33a7f710fc20059989a002071359119e1e9c0a4128b67729755da33": "train",
+    "8f799d59c9b5348ece1e5671692ea783d6d5e450ccebe31b6db9ad4f9510f8c5": "train",
+    "9116cbf4be063f5be851f65778ddfb91d60bdd5aa52e7211426769a6b2ce6f86": "train",
+    "973ef84ffaa4e83d002ed655331eb305b340c0f3f25b57795f97a151bcc3490b": "validation",
+    "b185f43818b8ff3aba325752922bbbf37fd094f1e282887487651e0a5c8f6c7a": "validation",
+    "b439fc5983a3a0db22239d5dcf8cbebf9104a8b71a93c2afd75e75fe87301e46": "validation",
+    "bace0e92b25324e8afbd0e5f6698b01a921780a2385e02419965fa97e3e796c4": "test",
+    "c3c503093a73b359d513d025d9185c7ada423099650828cbd4fdba12d1d7aafc": "test",
+    "db4d46d3c8abd3b8d2327e52a99599c63e7bd8ed5f1b122d3047d731fc6d2684": "test",
+    "dc8bf44eb4cc0becf1c5ebe252a515c98193744c2031498501de80e036899758": "test"
+  },
+  "label_provenance": "prediction_error_unverified",
+  "status": "complete",
+  "runtime_s": 26.096,
+  "package_versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.5",
+    "scikit_learn": "1.9.1",
+    "torch": "2.14.0+cpu"
+  },
+  "data_provenance": {
+    "dataset_key": "aim_2023",
+    "native_sample_rate_hz": 20.0,
+    "clock_provenance": "inferred_uniform_from_metadata",
+    "selected_channels": [
+      "InlineAcc",
+      "LateralAcc",
+      "RollRate",
+      "PitchRate",
+      "YawRate"
+    ],
+    "semantic_mapping": {
+      "InlineAcc": "longitudinal_accel_g",
+      "LateralAcc": "lateral_accel_g",
+      "VerticalAcc": "vertical_accel_g",
+      "RollRate": "roll_rate_deg_s",
+      "PitchRate": "pitch_rate_deg_s",
+      "YawRate": "yaw_rate_deg_s",
+      "ECU RPM": "engine_rpm",
+      "ECU ThrottlePos": "throttle_pct",
+      "Oil Pressure": "oil_pressure_bar",
+      "Rear Brake": "rear_brake_pressure_bar"
+    },
+    "semantic_mapping_version": "1.0",
+    "motion_policy": "training_low_dynamics_quantile"
+  }
+}

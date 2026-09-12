@@ -1,0 +1,5 @@
+task,split,metric,value,sample_count,reference_source
+recurrence,all,non_control_recording_coverage,0.7272727272727273,11,none
+recurrence,all,non_control_review_candidate_rate,0.125,8,unverified_threshold
+recurrence,all,control_candidate_detection_rate,0.5,2,training_low_dynamics_quantile
+data_quality,all,duplicate_alias_count,0.0,18,sha256

@@ -1,0 +1,9 @@
+task,split,metric,value,sample_count,reference_source
+next_sample_prediction,train,gru_mse,0.22628711207643554,333,none
+next_sample_prediction,validation,gru_mse,0.19158301079249399,108,none
+next_sample_prediction,test,gru_mse,0.18014900729048147,59,none
+next_sample_prediction,all,gru_mse,0.21334672983436156,500,none
+next_sample_prediction,train,persistence_mse,0.09257885037147842,333,persistence_baseline
+next_sample_prediction,validation,persistence_mse,0.08121912944875234,108,persistence_baseline
+next_sample_prediction,test,persistence_mse,0.09448238705678011,59,persistence_baseline
+next_sample_prediction,all,persistence_mse,0.09034976798103518,500,persistence_baseline
