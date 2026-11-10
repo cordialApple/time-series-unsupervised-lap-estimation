@@ -1,0 +1,8 @@
+task,split,metric,value,sample_count,reference_source
+time_domain_recurrence,all,driving_significant_rate,0.0,8,block_shuffle_null
+time_domain_recurrence,all,driving_fdr_significant_rate,0.0,8,block_shuffle_null
+time_domain_recurrence,all,driving_search_ceiling_rate,0.0,8,block_shuffle_null
+time_domain_recurrence,all,control_significant_rate,0.0,1,block_shuffle_null
+time_domain_recurrence,all,synthetic_detection_rate,0.95,40,tiled_real_segments
+time_domain_recurrence,all,synthetic_false_positive_rate,0.325,40,tiled_real_segments
+time_domain_recurrence,all,synthetic_median_period_error_fraction,0.025804321892672066,40,tiled_real_segments
