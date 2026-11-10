@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy.signal import correlate
 
 
 def _replace_nan_with_mean(values):
@@ -47,16 +48,21 @@ def normalized_autocorrelation(values, max_lag_samples=None):
     if array.ndim != 1:
         raise ValueError("Autocorrelation input must be one-dimensional")
     array = _replace_nan_with_mean(array)
-    lag_count = len(array) if max_lag_samples is None else min(len(array), int(max_lag_samples) + 1)
-    correlation = np.zeros(lag_count, dtype=float)
-    for lag in range(lag_count):
-        first = array[: len(array) - lag] if lag else array
-        second = array[lag:]
-        first = first - first.mean()
-        second = second - second.mean()
-        denominator = np.linalg.norm(first) * np.linalg.norm(second)
-        correlation[lag] = np.dot(first, second) / denominator if denominator > 1e-12 else 0.0
-    return correlation
+    count = len(array)
+    lag_count = count if max_lag_samples is None else min(count, int(max_lag_samples) + 1)
+    lags = np.arange(lag_count)
+    overlap = count - lags
+    centered = array - array.mean()
+    products = correlate(centered, centered, mode="full", method="fft")[count - 1 : count - 1 + lag_count]
+    sums = np.concatenate(([0.0], np.cumsum(centered)))
+    squares = np.concatenate(([0.0], np.cumsum(centered**2)))
+    leading_sum = sums[overlap]
+    trailing_sum = sums[count] - sums[lags]
+    leading_variance = squares[overlap] - leading_sum**2 / overlap
+    trailing_variance = squares[count] - squares[lags] - trailing_sum**2 / overlap
+    covariance = products - leading_sum * trailing_sum / overlap
+    denominator = np.sqrt(np.maximum(leading_variance, 0.0) * np.maximum(trailing_variance, 0.0))
+    return np.divide(covariance, denominator, out=np.zeros(lag_count), where=denominator > 1e-12)
 
 
 def rank_autocorrelation_peaks(correlation, sample_rate_hz, min_lag_s, max_lag_s, top_k=5):
