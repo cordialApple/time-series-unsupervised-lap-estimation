@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from scipy.integrate import cumulative_trapezoid
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import adjusted_rand_score, silhouette_score
@@ -19,7 +20,8 @@ from .config import RANDOM_SEED
 from .data import load_recording, prepare_recording_manifest, select_informative_channels
 from .datasets import DatasetSpec, resolve_dataset
 from .experiments import MLPAutoencoder, SequencePredictor, TemporalEncoder, build_window_dataset, dtw_distance, engineered_features, fit_channel_scaler, seconds_to_samples, transform_windows
-from .signal import build_multivariate_trace, lagged_cross_correlation, normalized_autocorrelation, rank_autocorrelation_peaks, recurrence_candidates
+from .physics import align_run, benjamini_hochberg, block_shuffle, calibrated_recurrence, heading_closure, resample_by_distance, segment_runs, tile_warped_laps
+from .signal import build_multivariate_trace, lagged_cross_correlation, moving_average, normalized_autocorrelation, rank_autocorrelation_peaks, recurrence_candidates
 
 
 EVALUATION_SPLITS = ("train", "validation", "test", "all")
@@ -557,6 +559,256 @@ EXPERIMENT_RUNNERS = {
     "07_sequence_models": run_sequence_models,
     "08_unsupervised_learning": run_unsupervised_learning,
 }
+
+
+PHYSICS_METHOD = "10_physics_laps"
+PHYSICS_TRACE_COLUMNS = {"drive_day_2026": "Motor RPM [Rpm]", "aim_2023": "YawRate"}
+PHYSICS_PRIMARY_DOMAINS = {"drive_day_2026": "distance", "aim_2023": "time"}
+PHYSICS_ALPHA = 0.05
+PHYSICS_MIN_LAG_S = 15.0
+PHYSICS_MAX_LAG_S = 120.0
+PHYSICS_BLOCK_S = 5.0
+BENCHMARK_LAPS = 4
+BENCHMARK_WARP_FRACTION = 0.08
+BENCHMARK_NOISE_FRACTION = 0.3
+
+
+def _recording_context(dataset_key, specification, manifest):
+    return ExperimentContext(
+        dataset_key,
+        specification,
+        specification.artifact_root,
+        specification.native_sample_rate_hz,
+        [PHYSICS_TRACE_COLUMNS[dataset_key]],
+        manifest,
+        np.empty(0),
+        pd.DataFrame(),
+        np.empty(0),
+        np.empty(0, dtype=bool),
+    )
+
+
+def _physics_traces(frame, dataset_key, sample_rate_hz):
+    raw = pd.to_numeric(frame[PHYSICS_TRACE_COLUMNS[dataset_key]], errors="coerce").interpolate(limit_direction="both").to_numpy(dtype=float)
+    smoothed = moving_average(raw, seconds_to_samples(0.5, sample_rate_hz))
+    traces = {"time": (smoothed, np.nan)}
+    if PHYSICS_PRIMARY_DOMAINS[dataset_key] == "distance":
+        revolutions = cumulative_trapezoid(np.abs(np.nan_to_num(raw)) / 60.0, dx=1.0 / sample_rate_hz, initial=0.0)
+        moving_samples = int(np.sum(np.diff(revolutions) > 0)) + 1
+        if moving_samples > 2:
+            grid, profile = resample_by_distance(revolutions, smoothed, moving_samples)
+            traces["distance"] = (profile, grid[1] - grid[0])
+    return raw, traces
+
+
+def _synthetic_lap_benchmark(traces, sample_rate_hz, trials, calibrate, rng):
+    shortest = seconds_to_samples(20.0, sample_rate_hz)
+    longest = seconds_to_samples(40.0, sample_rate_hz)
+    eligible = [trace for trace in traces if len(trace) >= shortest]
+    if not eligible:
+        return pd.DataFrame(columns=["repeating", "true_period_samples", "lag_samples", "p_value"])
+
+    def segment(source, length):
+        length = min(length, len(source))
+        start = rng.integers(len(source) - length + 1)
+        return source[start : start + length]
+
+    rows = []
+    for _ in range(trials):
+        length = int(rng.integers(shortest, longest + 1))
+        sources = rng.choice(len(eligible), size=BENCHMARK_LAPS, replace=len(eligible) < BENCHMARK_LAPS)
+        signal, period = tile_warped_laps(segment(eligible[sources[0]], length), BENCHMARK_LAPS, BENCHMARK_WARP_FRACTION, BENCHMARK_NOISE_FRACTION, rng)
+        unrelated = np.concatenate([segment(eligible[source], length) for source in sources])
+        for repeating, values, true_period in [(True, signal, period), (False, unrelated, np.nan)]:
+            result = calibrate(values)
+            rows.append(
+                {
+                    "repeating": repeating,
+                    "true_period_samples": true_period,
+                    "lag_samples": np.nan if result is None else result["lag_samples"],
+                    "p_value": 1.0 if result is None else result["p_value"],
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def run_physics_laps(project_root, dataset_key="drive_day_2026", surrogate_count=199, benchmark_trials=40, **_):
+    started_at = time.perf_counter()
+    specification = _resolve_enabled_dataset(dataset_key, project_root)
+    manifest = prepare_recording_manifest(specification)
+    sample_rate_hz = specification.native_sample_rate_hz
+    rng = np.random.default_rng(RANDOM_SEED)
+    min_lag = seconds_to_samples(PHYSICS_MIN_LAG_S, sample_rate_hz)
+    max_lag = seconds_to_samples(PHYSICS_MAX_LAG_S, sample_rate_hz)
+    block = seconds_to_samples(PHYSICS_BLOCK_S, sample_rate_hz)
+
+    def calibrate(trace):
+        return calibrated_recurrence(trace, min_lag, max_lag, block, surrogate_count, rng)
+
+    rows = []
+    benchmark_traces = {}
+    for record in manifest.itertuples(index=False):
+        frame = load_recording(record.primary_path, specification)
+        raw, traces = _physics_traces(frame, dataset_key, sample_rate_hz)
+        for domain, (trace, revolutions_per_sample) in traces.items():
+            if not record.control_candidate:
+                benchmark_traces.setdefault(domain, []).append(trace)
+            result = calibrate(trace)
+            if result is None:
+                continue
+            row = {
+                "recording_id": record.recording_id,
+                "segment_id": f"{domain}_period",
+                "start_s": 0.0,
+                "end_s": record.duration_s,
+                "prediction_kind": f"{domain}_domain_lap_period",
+                "score": result["correlation"],
+                "label_status": "provisional_unverified",
+                "domain": domain,
+                "split": record.split,
+                "control_candidate": record.control_candidate,
+                "period_s": result["lag_samples"] / sample_rate_hz,
+                "lap_length_motor_revolutions": result["lag_samples"] * revolutions_per_sample,
+                **result,
+            }
+            if dataset_key == "aim_2023":
+                row.update(heading_closure(raw, sample_rate_hz, result["lag_samples"], min_lag, max_lag))
+            rows.append(row)
+    predictions = pd.DataFrame(rows)
+    predictions["q_value"] = predictions.groupby("domain")["p_value"].transform(benjamini_hochberg)
+    metrics = []
+    for domain, group in predictions.groupby("domain"):
+        driving = group.loc[~group["control_candidate"]]
+        controls = group.loc[group["control_candidate"]]
+        for metric, selected, values in [
+            ("driving_significant_rate", driving, driving["p_value"] < PHYSICS_ALPHA),
+            ("driving_fdr_significant_rate", driving, driving["q_value"] < 2 * PHYSICS_ALPHA),
+            ("driving_search_ceiling_rate", driving, driving["at_search_ceiling"]),
+            ("control_significant_rate", controls, controls["p_value"] < PHYSICS_ALPHA),
+        ]:
+            metrics.append({"task": f"{domain}_domain_recurrence", "split": "all", "metric": metric, "value": values.mean() if len(selected) else np.nan, "sample_count": len(selected), "reference_source": "block_shuffle_null"})
+    benchmarks = []
+    for domain, domain_traces in benchmark_traces.items():
+        benchmark = _synthetic_lap_benchmark(domain_traces, sample_rate_hz, benchmark_trials, calibrate, rng)
+        benchmarks.append(benchmark.assign(domain=domain))
+        is_repeating = benchmark["repeating"].astype(bool)
+        repeating = benchmark.loc[is_repeating]
+        unrelated = benchmark.loc[~is_repeating]
+        period_error = (repeating["lag_samples"] / repeating["true_period_samples"] - 1.0).abs()
+        for metric, selected, value in [
+            ("synthetic_detection_rate", repeating, (repeating["p_value"] < PHYSICS_ALPHA).mean()),
+            ("synthetic_false_positive_rate", unrelated, (unrelated["p_value"] < PHYSICS_ALPHA).mean()),
+            ("synthetic_median_period_error_fraction", repeating, period_error.median()),
+        ]:
+            metrics.append({"task": f"{domain}_domain_recurrence", "split": "all", "metric": metric, "value": value if len(selected) else np.nan, "sample_count": len(selected), "reference_source": "tiled_real_segments"})
+    context = _recording_context(dataset_key, specification, manifest)
+    config = {"min_lag_s": PHYSICS_MIN_LAG_S, "max_lag_s": PHYSICS_MAX_LAG_S, "null": "block_shuffle", "block_s": PHYSICS_BLOCK_S, "surrogate_count": surrogate_count, "alpha": PHYSICS_ALPHA, "primary_domain": PHYSICS_PRIMARY_DOMAINS[dataset_key], "benchmark_trials": benchmark_trials, "benchmark_laps": BENCHMARK_LAPS, "benchmark_warp_fraction": BENCHMARK_WARP_FRACTION, "benchmark_noise_fraction": BENCHMARK_NOISE_FRACTION, "seed": RANDOM_SEED}
+    result = _write_result(context, PHYSICS_METHOD, "null_calibrated_lap_period_detection", config, predictions.sort_values(["domain", "p_value"]).reset_index(drop=True), pd.DataFrame(metrics), "physics_recurrence_unverified", started_at)
+    pd.concat(benchmarks, ignore_index=True).to_csv(result.output_dir / "synthetic_benchmark.csv", index=False)
+    return result
+
+
+COURSE_METHOD = "11_course_runs"
+COURSE_SCALES = (0.75, 1.3, 0.01)
+COURSE_MAX_SHIFT_S = 10.0
+COURSE_SHIFT_STEP_S = 0.2
+
+
+def run_course_alignment(project_root, dataset_key="aim_2023", null_draws_per_pair=5, **_):
+    started_at = time.perf_counter()
+    specification = _resolve_enabled_dataset(dataset_key, project_root)
+    manifest = prepare_recording_manifest(specification)
+    sample_rate_hz = specification.native_sample_rate_hz
+    rng = np.random.default_rng(RANDOM_SEED)
+    scales = np.arange(COURSE_SCALES[0], COURSE_SCALES[1] + COURSE_SCALES[2] / 2.0, COURSE_SCALES[2])
+    max_shift = seconds_to_samples(COURSE_MAX_SHIFT_S, sample_rate_hz)
+    shift_step = seconds_to_samples(COURSE_SHIFT_STEP_S, sample_rate_hz)
+    block = seconds_to_samples(PHYSICS_BLOCK_S, sample_rate_hz)
+
+    def align(reference, run):
+        return align_run(reference, run, scales, max_shift, shift_step)
+
+    def heading_turns(yaw_rate):
+        return cumulative_trapezoid(yaw_rate, dx=1.0 / sample_rate_hz, initial=0.0) / 360.0
+
+    runs = []
+    for record in manifest.sort_values("recording_id").itertuples(index=False):
+        frame = load_recording(record.primary_path, specification)
+        raw = pd.to_numeric(frame[PHYSICS_TRACE_COLUMNS[dataset_key]], errors="coerce").interpolate(limit_direction="both").to_numpy(dtype=float)
+        smoothed = moving_average(raw, seconds_to_samples(0.5, sample_rate_hz))
+        for index, (start, stop) in enumerate(segment_runs(raw, sample_rate_hz), 1):
+            runs.append({"recording_id": record.recording_id, "run_id": f"{record.recording_id[:6]}-{index}", "start": start, "stop": stop, "recording_duration_s": record.duration_s, "raw": raw[start:stop], "trace": smoothed[start:stop]})
+    pair_rows = []
+    null = []
+    similarity = np.eye(len(runs))
+    for first, second in combinations(range(len(runs)), 2):
+        correlation, scale, shift = align(runs[first]["trace"], runs[second]["trace"])
+        similarity[first, second] = similarity[second, first] = correlation
+        null.extend(align(runs[first]["trace"], block_shuffle(runs[second]["trace"], block, rng))[0] for _ in range(null_draws_per_pair))
+        pair_rows.append({"first_run": runs[first]["run_id"], "second_run": runs[second]["run_id"], "correlation": correlation, "scale": scale, "shift_s": shift / sample_rate_hz})
+    null = np.asarray(null)
+
+    def null_p_value(correlation):
+        return float((1 + np.sum(null >= correlation)) / (1 + len(null)))
+
+    pairs = pd.DataFrame(pair_rows)
+    pairs["p_value"] = pairs["correlation"].map(null_p_value)
+    typical = np.array([np.median(np.delete(row, index)) for index, row in enumerate(similarity)])
+    reference = int(np.argmax(typical))
+    reference_run = runs[reference]
+    grid = np.arange(len(reference_run["trace"]))
+    reference_heading = heading_turns(reference_run["raw"])
+    rows = []
+    profiles = []
+    for index, run in enumerate(runs):
+        correlation, scale, shift = (1.0, 1.0, 0) if index == reference else align(reference_run["trace"], run["trace"])
+        heading = heading_turns(run["raw"])
+        aligned = np.interp(grid, np.arange(len(heading)) * scale + shift, heading, left=np.nan, right=np.nan)
+        aligned = aligned - np.nanmedian(aligned - reference_heading)
+        profiles.append(pd.DataFrame({"run_id": run["run_id"], "reference_time_s": grid / sample_rate_hz, "heading_turns": aligned}).dropna())
+        rows.append(
+            {
+                "recording_id": run["recording_id"],
+                "segment_id": run["run_id"],
+                "start_s": run["start"] / sample_rate_hz,
+                "end_s": run["stop"] / sample_rate_hz,
+                "prediction_kind": "course_run",
+                "score": typical[index],
+                "label_status": "provisional_unverified",
+                "recording_duration_s": run["recording_duration_s"],
+                "is_reference": index == reference,
+                "reference_correlation": correlation,
+                "reference_p_value": null_p_value(correlation),
+                "pace_scale": scale,
+                "aligned_lap_time_s": len(reference_run["trace"]) / sample_rate_hz / scale,
+            }
+        )
+    predictions = pd.DataFrame(rows)
+    matched = predictions.loc[predictions["reference_p_value"] < PHYSICS_ALPHA]
+    metrics = pd.DataFrame(
+        [
+            {"task": "course_run_alignment", "split": "all", "metric": metric, "value": value, "sample_count": count, "reference_source": source}
+            for metric, value, count, source in [
+                ("run_count", len(runs), len(manifest), "yaw_activity_segmentation"),
+                ("recordings_with_runs", predictions["recording_id"].nunique(), len(manifest), "yaw_activity_segmentation"),
+                ("median_pair_correlation", pairs["correlation"].median(), len(pairs), "scale_shift_alignment"),
+                ("minimum_pair_correlation", pairs["correlation"].min(), len(pairs), "scale_shift_alignment"),
+                ("null_q95_correlation", np.quantile(null, 0.95), len(null), "block_shuffle_null"),
+                ("null_maximum_correlation", null.max(), len(null), "block_shuffle_null"),
+                ("pair_significant_rate", (pairs["p_value"] < PHYSICS_ALPHA).mean(), len(pairs), "block_shuffle_null"),
+                ("runs_matching_reference", len(matched), len(runs), "block_shuffle_null"),
+                ("median_aligned_lap_time_s", matched["aligned_lap_time_s"].median(), len(matched), "reference_run_span"),
+                ("minimum_aligned_lap_time_s", matched["aligned_lap_time_s"].min(), len(matched), "reference_run_span"),
+                ("maximum_aligned_lap_time_s", matched["aligned_lap_time_s"].max(), len(matched), "reference_run_span"),
+            ]
+        ]
+    )
+    config = {"activity_threshold_deg_s": 5.0, "min_run_s": 30.0, "scale_range": list(COURSE_SCALES), "max_shift_s": COURSE_MAX_SHIFT_S, "shift_step_s": COURSE_SHIFT_STEP_S, "null": "block_shuffle", "block_s": PHYSICS_BLOCK_S, "null_draws_per_pair": null_draws_per_pair, "alpha": PHYSICS_ALPHA, "seed": RANDOM_SEED}
+    result = _write_result(_recording_context(dataset_key, specification, manifest), COURSE_METHOD, "cross_recording_course_run_alignment", config, predictions, metrics, "course_alignment_unverified", started_at)
+    pairs.to_csv(result.output_dir / "pairs.csv", index=False)
+    pd.DataFrame({"correlation": null}).to_csv(result.output_dir / "null.csv", index=False)
+    pd.concat(profiles, ignore_index=True).to_csv(result.output_dir / "aligned_profiles.csv", index=False)
+    return result
 
 
 def run_experiment(method, project_root, dataset_key="drive_day_2026", **options):

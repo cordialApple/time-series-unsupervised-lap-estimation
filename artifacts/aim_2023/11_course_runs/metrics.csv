@@ -1,0 +1,12 @@
+task,split,metric,value,sample_count,reference_source
+course_run_alignment,all,run_count,8.0,18,yaw_activity_segmentation
+course_run_alignment,all,recordings_with_runs,7.0,18,yaw_activity_segmentation
+course_run_alignment,all,median_pair_correlation,0.8259894544650173,28,scale_shift_alignment
+course_run_alignment,all,minimum_pair_correlation,0.7329862506836564,28,scale_shift_alignment
+course_run_alignment,all,null_q95_correlation,0.4226637419542389,140,block_shuffle_null
+course_run_alignment,all,null_maximum_correlation,0.46997959269635803,140,block_shuffle_null
+course_run_alignment,all,pair_significant_rate,1.0,28,block_shuffle_null
+course_run_alignment,all,runs_matching_reference,8.0,8,block_shuffle_null
+course_run_alignment,all,median_aligned_lap_time_s,86.57448979591837,8,reference_run_span
+course_run_alignment,all,minimum_aligned_lap_time_s,80.09345794392522,8,reference_run_span
+course_run_alignment,all,maximum_aligned_lap_time_s,108.48101265822784,8,reference_run_span
